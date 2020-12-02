@@ -34,6 +34,8 @@ func JobFindAll(c *gin.Context) {
 
 func JobFind(c *gin.Context) {
 
+	name := c.Query("name")
+
 	categoryId, err := strconv.Atoi(c.Query("categoryId"))
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
@@ -52,7 +54,7 @@ func JobFind(c *gin.Context) {
 		pageSize = 8
 	}
 
-	result, err := models.FindJob(pageNum, pageSize, map[string]interface{}{"category_id": categoryId})
+	result, err := models.FindJob(name, pageNum, pageSize, map[string]interface{}{"category_id": categoryId})
 
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
@@ -111,8 +113,6 @@ func JobCreate(c *gin.Context) {
 		"msg":    "创建任务成功",
 	})
 }
-
-
 
 func JobUpdateBranch(c *gin.Context) {
 

@@ -41,7 +41,9 @@ func RepositoryFindAll(c *gin.Context) {
 
 func RepositoryFind(c *gin.Context) {
 
+	name := c.Query("name")
 	pageNum, err := strconv.Atoi(c.Query("pageNum"))
+
 	if err != nil {
 		pageNum = 1
 	}
@@ -50,7 +52,7 @@ func RepositoryFind(c *gin.Context) {
 		pageSize = 8
 	}
 
-	result, err := models.FindRepository(pageNum, pageSize, map[string]interface{}{})
+	result, err := models.FindRepository(name, pageNum, pageSize, map[string]interface{}{})
 
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{

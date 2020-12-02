@@ -26,15 +26,15 @@ type Job struct {
 	Desc          string `gorm:"type:varchar(1000)",binding:"required,min=2,max=999"`
 	Status        int    `gorm:"default:0"`        //任务状态
 	Branch        string `gorm:"default:'master'"` //部署分支默认master，用户在部署之前随时可以修改
-	Url           string //访问目录
-	RunQuantity   int    `gorm:"default:0"`
-	CategoryId    int    `gorm:"index",binding:"required"`
+	Url           string                           //访问目录
+	RunQuantity   int `gorm:"default:0"`
+	CategoryId    int `gorm:"index",binding:"required"`
 	WebHookUrl    string
 	RepositoryId  int    `gorm:"index",binding:"required"`
 	BuildDir      string `binding:"required"` //打包的目录,默认是dist
 	BuildCommand  string `binding:"required"` //打包命令，npm run build 可以读取package.json供选择
-	User          string //操作人，目前只有加锁用户
-	LockPassword  string //任务加锁
+	User          string                      //操作人，目前只有加锁用户
+	LockPassword  string                      //任务加锁
 	TerminalInfo  string `gorm:"type:varchar(1000)"`
 	SuccessScript string `gorm:"type:varchar(1000)"` //打包成功运行的脚本，多个用 ; 隔开
 }
@@ -46,7 +46,6 @@ type JobPageResult struct {
 	PageSize  int
 	TotalPage int
 }
-
 
 func (j *Job) FindAll() (jobs []Job, err error) {
 	err = sql.DB.Order("created_at desc").Select("id,name").Find(&jobs).Error
@@ -107,11 +106,11 @@ func (j *Job) Destroy(id string) (err error) {
 	return sql.DB.Delete(&j).Error
 }
 
-func FindJob(pageNum int, pageSize int, maps interface{}) (JobPageResult, error) {
+func FindJob(name string, pageNum int, pageSize int, maps interface{}) (JobPageResult, error) {
 	var result JobPageResult
 	var err error
 
-	result.List, result.Total, err = GetJobs(pageNum, pageSize, maps)
+	result.List, result.Total, err = GetJobs(name,pageNum, pageSize, maps)
 	if err != nil {
 		return result, err
 	}
@@ -124,11 +123,14 @@ func FindJob(pageNum int, pageSize int, maps interface{}) (JobPageResult, error)
 	return result, nil
 }
 
-func GetJobs(pageNum int, pageSize int, maps interface{}) ([]*Job, int, error) {
+func GetJobs(name string, pageNum int, pageSize int, maps interface{}) ([]*Job, int, error) {
 	var total int
 	var jobs []*Job
 
 	query := sql.DB.Model(&Job{}).Where(maps).Order("updated_at desc")
+	if name != "" {
+		query = query.Where("name LIKE ?", "%"+name+"%")
+	}
 	query.Count(&total)
 	err := query.Offset((pageNum - 1) * pageSize).Limit(pageSize).Find(&jobs).Error
 

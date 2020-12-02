@@ -64,11 +64,11 @@ func (r *Repository) Create() error {
 
 }
 
-func FindRepository(pageNum int, pageSize int, maps interface{}) (RepositoryPageResult, error) {
+func FindRepository(name string, pageNum int, pageSize int, maps interface{}) (RepositoryPageResult, error) {
 	var result RepositoryPageResult
 	var err error
 
-	result.List,result.Total, err = GetRepositories(pageNum, pageSize, maps)
+	result.List,result.Total, err = GetRepositories(name, pageNum, pageSize, maps)
 	if err != nil {
 		return result, err
 	}
@@ -81,12 +81,15 @@ func FindRepository(pageNum int, pageSize int, maps interface{}) (RepositoryPage
 	return result, nil
 }
 
-func GetRepositories(pageNum int, pageSize int, maps interface{}) ([]*Repository, int, error) {
+func GetRepositories(name string,pageNum int, pageSize int, maps interface{}) ([]*Repository, int, error) {
 
 	var total int
 	var repositories []*Repository
 
 	query := sql.DB.Model(&Repository{}).Where(maps).Order("updated_at desc")
+	if name != "" {
+		query = query.Where("name LIKE ?", "%"+ name +"%")
+	}
 	query.Count(&total)
 	err := query.Offset((pageNum - 1) * pageSize).Limit(pageSize).Find(&repositories).Error
 
