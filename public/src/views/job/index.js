@@ -6,6 +6,7 @@ import { jobsFind } from "../../api/job";
 import { categories } from "../../api/category";
 import CategoriesTable from "./categoriesTable";
 import Edit from "./edit";
+import SearchBox from "../../components/searchBox";
 import AddIcon from "@material-ui/icons/Add";
 
 const styles = theme => ({
@@ -22,12 +23,28 @@ const styles = theme => ({
     bottom: theme.spacing(2),
     right: theme.spacing(2)
   },
+  fabSerach: {
+    position: "absolute",
+    bottom: theme.spacing(2),
+    right: theme.spacing(12)
+  },
   pagination: {
     width: "100%",
     display: "flex",
     justifyContent: "center",
     textAlign: "center",
     padding: theme.spacing(3)
+  },
+  search: {
+    width: "400px",
+    height: "64px",
+    position: "absolute",
+    top: 0,
+    left: "50%",
+    transform: 'translateX(-50%)',
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
   }
 });
 
@@ -44,7 +61,8 @@ class Jobs extends React.Component {
         categoryName: ""
       },
       totalPage: 1,
-      pageNum: 1
+      pageNum: 1,
+      name: "",
     };
     this.timeoutId = null;
   }
@@ -71,6 +89,13 @@ class Jobs extends React.Component {
   componentWillUnmount() {
     window.wsUpdateDataFunc = null;
   }
+
+  refreshSearch(val) {
+    this.setState({name: val}, () => {
+      this.setTabAndJobsByCategoryId(this.state.category)
+    })
+  }
+
   changePagination(v, pageNum) {
     if (pageNum === this.state.pageNum) {
       return;
@@ -87,7 +112,8 @@ class Jobs extends React.Component {
     if (this.timeoutId) {
       clearTimeout(this.timeoutId);
     }
-    jobsFind({ categoryId, pageNum, pageSize })
+    let name = this.state.name;
+    jobsFind({ categoryId, pageNum, pageSize, name })
       .then(r => {
         this.setState({
           category: index,
@@ -143,6 +169,9 @@ class Jobs extends React.Component {
     const { classes } = this.props;
     return (
       <div>
+        <div className={classes.search}>
+          <SearchBox refreshSearch={this.refreshSearch.bind(this)} />
+        </div>
         <Paper className={classes.root}>
           <Tabs
             value={this.state.category}
