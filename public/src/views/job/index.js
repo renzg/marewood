@@ -23,11 +23,6 @@ const styles = theme => ({
     bottom: theme.spacing(2),
     right: theme.spacing(2)
   },
-  fabSerach: {
-    position: "absolute",
-    bottom: theme.spacing(2),
-    right: theme.spacing(12)
-  },
   pagination: {
     width: "100%",
     display: "flex",
@@ -41,10 +36,10 @@ const styles = theme => ({
     position: "absolute",
     top: 0,
     left: "50%",
-    transform: 'translateX(-50%)',
+    transform: "translateX(-50%)",
     display: "flex",
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "center"
   }
 });
 
@@ -62,7 +57,7 @@ class Jobs extends React.Component {
       },
       totalPage: 1,
       pageNum: 1,
-      name: "",
+      name: ""
     };
     this.timeoutId = null;
   }
@@ -91,9 +86,9 @@ class Jobs extends React.Component {
   }
 
   refreshSearch(val) {
-    this.setState({name: val}, () => {
-      this.setTabAndJobsByCategoryId(this.state.category)
-    })
+    this.setState({ name: val }, () => {
+      this.setTabAndJobsByCategoryId(this.state.category);
+    });
   }
 
   changePagination(v, pageNum) {

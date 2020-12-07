@@ -9,7 +9,6 @@ import { repositoryFind } from "../../api/repository";
 import Pagination from "@material-ui/lab/Pagination";
 import SearchBox from "../../components/searchBox";
 
-
 const styles = theme => ({
   root: {
     width: "100%",
@@ -37,10 +36,10 @@ const styles = theme => ({
     position: "absolute",
     top: 0,
     left: "50%",
-    transform: 'translateX(-50%)',
+    transform: "translateX(-50%)",
     display: "flex",
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "center"
   }
 });
 
@@ -114,9 +113,9 @@ class RepositoryTable extends React.Component {
   }
 
   refreshSearch(val) {
-    this.setState({name: val}, () => {
-      this.getTableData()
-    })
+    this.setState({ name: val }, () => {
+      this.getTableData();
+    });
   }
 
   render() {

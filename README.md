@@ -60,6 +60,7 @@ http://xusenlin.com/article?key=iQBftC
 
 # 更新日志
 ### v1.2 等待发布
+* @wenbiyou 添加了任务和仓库的搜索功能 （2020-12-07）
 * 添加了 websocket 重试机制
 * @wojiaolingdu111 添加了仓库重建功能
 * 添加了 websocket 广播，每个仓库和任务状态实时同步所有人。
